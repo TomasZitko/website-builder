@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+build/
+dist/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI Models & Large Files
+*.pkl
+*.pth
+*.h5
+*.bin
+*.onnx
+
+# Database
+*.sqlite
+*.db
+database.json
+db-backups/
+
+# Uploads & User Data
+uploads/
+user-files/
+temp/
+
+# Misc
+.cache/
+nul

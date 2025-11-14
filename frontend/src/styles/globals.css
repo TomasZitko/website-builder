@@ -1,0 +1,675 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --radius: 0.625rem;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 222.2 84% 4.9%;
+  --sidebar-primary: 222.2 47.4% 11.2%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96.1%;
+  --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+  --sidebar-border: 214.3 31.8% 91.4%;
+  --sidebar-ring: 222.2 84% 4.9%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 47.4% 11.2%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 47.4% 11.2%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+  --sidebar: 222.2 47.4% 11.2%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-primary: 217.2 91.2% 59.8%;
+  --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+  --sidebar-accent: 217.2 32.6% 17.5%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 217.2 32.6% 17.5%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+  }
+}
+
+/* Simple Glass Button */
+.glass-button-simple {
+  background: linear-gradient(135deg,
+    hsl(var(--foreground) / 0.08),
+    hsl(var(--foreground) / 0.04)
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(var(--foreground) / 0.1);
+  box-shadow:
+    0 4px 12px hsl(var(--foreground) / 0.05),
+    inset 0 1px 0 hsl(var(--foreground) / 0.1);
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-button-simple:hover {
+  background: linear-gradient(135deg,
+    hsl(var(--foreground) / 0.12),
+    hsl(var(--foreground) / 0.06)
+  );
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 16px hsl(var(--foreground) / 0.08),
+    inset 0 1px 0 hsl(var(--foreground) / 0.15);
+}
+
+.glass-button-simple:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 8px hsl(var(--foreground) / 0.05),
+    inset 0 1px 3px hsl(var(--foreground) / 0.1);
+}
+
+.glass-button-simple:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* === LIQUID GLASS DESIGN SYSTEM === */
+
+/* Glass Button - Primary (Gradient with shimmer) */
+.glass-button-primary {
+  @apply absolute inset-0 rounded-xl;
+  @apply bg-gradient-to-br from-violet-500 to-blue-600;
+  @apply shadow-[0_8px_32px_0_rgba(139,92,246,0.3)];
+  @apply transition-all duration-300 ease-out;
+}
+
+.glass-button-primary::before {
+  content: '';
+  @apply absolute inset-0 rounded-xl;
+  @apply bg-gradient-to-br from-white/20 to-white/0;
+  @apply opacity-0;
+  @apply transition-opacity duration-300;
+}
+
+button:hover .glass-button-primary::before {
+  @apply opacity-100;
+}
+
+button:active .glass-button-primary {
+  @apply scale-[0.98];
+  @apply shadow-[0_4px_16px_0_rgba(139,92,246,0.4)];
+}
+
+/* Glass Button - Secondary (Frosted glass) */
+.glass-button-secondary {
+  @apply absolute inset-0 rounded-xl;
+  @apply bg-gradient-to-br from-foreground/[0.08] to-foreground/[0.04];
+  @apply backdrop-blur-xl;
+  @apply border border-foreground/[0.08];
+  @apply shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)];
+  @apply transition-all duration-300 ease-out;
+}
+
+.glass-button-secondary::before {
+  content: '';
+  @apply absolute inset-0 rounded-xl;
+  @apply bg-gradient-to-br from-white/0 to-white/0;
+  @apply opacity-0;
+  @apply transition-opacity duration-300;
+}
+
+button:hover .glass-button-secondary::before {
+  @apply from-white/[0.08] to-white/[0.02];
+  @apply opacity-100;
+}
+
+button:active .glass-button-secondary {
+  @apply scale-[0.98];
+}
+
+/* Glass Input */
+.glass-input-wrap {
+  @apply relative rounded-xl;
+  @apply shadow-[0_8px_32px_0_rgba(0,0,0,0.08)];
+}
+
+.glass-input {
+  @apply relative flex h-14 w-full items-center rounded-xl;
+  @apply bg-gradient-to-br from-background/95 to-background/80;
+  @apply backdrop-blur-xl;
+  @apply border border-foreground/[0.08];
+  @apply shadow-[inset_0_1px_0_0_rgba(255,255,255,0.03)];
+  @apply transition-all duration-300 ease-out;
+  @apply overflow-hidden;
+}
+
+.glass-input:focus-within {
+  @apply border-slate-400/50;
+  @apply shadow-[0_0_0_3px_rgba(148,163,184,0.15)];
+  @apply bg-gradient-to-br from-slate-500/5 to-gray-600/5;
+}
+
+.glass-input-text-area {
+  @apply absolute inset-0 rounded-xl;
+  @apply bg-gradient-to-r from-transparent via-slate-500/[0.03] to-transparent;
+  @apply opacity-0;
+  @apply transition-opacity duration-500;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.glass-input:focus-within .glass-input-text-area {
+  @apply opacity-100;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Glass Testimonial Card */
+.glass-testimonial-card {
+  @apply relative rounded-2xl p-5;
+  @apply bg-gradient-to-br from-background/60 to-background/40;
+  @apply backdrop-blur-xl;
+  @apply border border-foreground/[0.08];
+  @apply shadow-[0_8px_32px_0_rgba(0,0,0,0.12)];
+  @apply transition-all duration-300 ease-out;
+}
+
+.glass-testimonial-card:hover {
+  @apply border-foreground/[0.12];
+  @apply shadow-[0_12px_48px_0_rgba(0,0,0,0.16)];
+  @apply -translate-y-1;
+}
+
+/* Pulse Animation for Background */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+/* Custom Checkbox */
+input[type="checkbox"] {
+  @apply appearance-none h-4 w-4 rounded;
+  @apply border-2 border-foreground/20;
+  @apply bg-foreground/5;
+  @apply cursor-pointer;
+  @apply transition-all duration-200;
+}
+
+input[type="checkbox"]:checked {
+  @apply bg-slate-500 border-slate-500;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
+
+input[type="checkbox"]:focus {
+  @apply ring-2 ring-slate-500/20 ring-offset-2 ring-offset-background;
+}
+
+/* Input Autofill Styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: hsl(var(--foreground));
+  -webkit-box-shadow: 0 0 0px 1000px hsl(var(--background) / 0.95) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* === LUXURY LIQUID GLASS DESIGN SYSTEM === */
+
+/* Custom properties for CSS animations */
+@property --angle-1 {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: -75deg;
+}
+@property --angle-2 {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: -45deg;
+}
+
+/* Button Wrapper: Handles 3D effect and positioning */
+.glass-button-wrap {
+  --anim-time: 400ms;
+  --anim-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  z-index: 2;
+  transition: transform var(--anim-time) var(--anim-ease);
+}
+
+/* Button Shadow */
+.glass-button-shadow {
+  position: absolute;
+  inset: -0.5rem;
+  border-radius: 9999px;
+  background: transparent;
+  filter: blur(0px);
+  transition: all var(--anim-time) var(--anim-ease);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+}
+
+/* Main Button Style - Liquid Glass */
+.glass-button {
+  -webkit-tap-highlight-color: transparent;
+  background: rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--anim-time) var(--anim-ease);
+}
+
+/* Dark mode glass button */
+.dark .glass-button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Top highlight line */
+.glass-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .glass-button::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+/* Left highlight line */
+.glass-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6),
+    transparent,
+    rgba(255, 255, 255, 0.2)
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .glass-button::after {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3),
+    transparent,
+    rgba(255, 255, 255, 0.1)
+  );
+}
+
+.glass-button:hover {
+  transform: translateY(-2px);
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass-button:active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Button Text */
+.glass-button-text {
+  position: relative;
+  z-index: 11;
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  transition: all var(--anim-time) var(--anim-ease);
+}
+
+/* State changes on the wrapper using :has() */
+.glass-button-wrap:has(.glass-button:hover) .glass-button-shadow {
+  filter: blur(0px);
+  opacity: 0;
+}
+
+.glass-button-wrap:has(.glass-button:active) .glass-button-shadow {
+  filter: blur(0px);
+  opacity: 0;
+}
+
+/* Touch-device fallbacks */
+@media (hover: none) and (pointer: coarse) {
+  .glass-button:hover {
+    transform: none;
+  }
+}
+
+/* === LUXURY GLASS INPUT === */
+
+/* Input Wrapper */
+.luxury-glass-input-wrap {
+  --anim-time: 400ms;
+  --anim-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  z-index: 2;
+  transition: transform var(--anim-time) var(--anim-ease);
+}
+
+/* Input Shadow */
+.luxury-glass-input-shadow {
+  position: absolute;
+  inset: -0.5rem;
+  border-radius: 9999px;
+  background: transparent;
+  filter: blur(0px);
+  transition: all var(--anim-time) var(--anim-ease);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+}
+
+/* Main Input Style - Liquid Glass */
+.luxury-glass-input {
+  -webkit-tap-highlight-color: transparent;
+  background: rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--anim-time) var(--anim-ease);
+}
+
+.dark .luxury-glass-input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Top highlight line for input */
+.luxury-glass-input::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .luxury-glass-input::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+/* Left highlight line for input */
+.luxury-glass-input::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6),
+    transparent,
+    rgba(255, 255, 255, 0.2)
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .luxury-glass-input::after {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3),
+    transparent,
+    rgba(255, 255, 255, 0.1)
+  );
+}
+
+.luxury-glass-input:has(input:focus) {
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.dark .luxury-glass-input:has(input:focus) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Input Text */
+.luxury-glass-input-text {
+  position: relative;
+  z-index: 11;
+  transition: all var(--anim-time) var(--anim-ease);
+}
+
+/* State changes on the wrapper using :has() */
+.luxury-glass-input-wrap:has(input:focus) .luxury-glass-input-shadow {
+  filter: blur(0px);
+  opacity: 0;
+}
+
+/* === GLASSMORPHISM DASHBOARD ENHANCEMENTS === */
+
+/* Radial gradient utility */
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+/* Additional shimmer keyframes for StatsCard and QuickActions */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Performance optimization for transforms */
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Perspective for 3D effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Smooth hardware acceleration */
+@layer utilities {
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* === OCEANIC BACKGROUND ANIMATIONS === */
+
+/* Breathing effect - subtle scale and opacity pulse */
+@keyframes oceanic-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.98;
+  }
+}
+
+/* Hue shift - slow color rotation */
+@keyframes oceanic-hue-shift {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% {
+    filter: hue-rotate(5deg) brightness(1.02);
+  }
+  50% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  75% {
+    filter: hue-rotate(-5deg) brightness(0.98);
+  }
+}
+
+/* Vertical lines animation - slow sideways drift */
+.vertical-lines-overlay {
+  animation: vertical-lines-drift 30s linear infinite;
+}
+
+@keyframes vertical-lines-drift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(4px);
+  }
+}
+
+/* Noise grain subtle animation */
+.noise-grain-overlay {
+  animation: noise-grain-flicker 0.5s steps(2) infinite;
+}
+
+@keyframes noise-grain-flicker {
+  0%, 100% {
+    opacity: 0.04;
+  }
+  50% {
+    opacity: 0.03;
+  }
+}
+
+/* === ZONO BOLD BRANDING === */
+.zono-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

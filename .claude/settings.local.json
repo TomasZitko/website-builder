@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell \"Stop-Process -Id 72960 -Force\")",
+      "Bash(powershell \"Stop-Process -Id 98248 -Force\")",
+      "Bash(node test-deepseek.js:*)",
+      "Bash(nul)",
+      "Bash(powershell:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -15,7 +15,7 @@ const supabase = createClient(
  */
 export async function sendMessage(req: Request, res: Response) {
   try {
-    const { message, sessionId } = req.body;
+    const { message, sessionId, imageUrls } = req.body;
     const userId = req.userId!; // Required by auth middleware
 
     if (!message) {
@@ -26,6 +26,7 @@ export async function sendMessage(req: Request, res: Response) {
     console.log('║  NEW MESSAGE RECEIVED                ║');
     console.log('╚══════════════════════════════════════╝');
     console.log('📤 User message:', message);
+    console.log('📸 Images:', imageUrls?.length || 0);
     console.log('🆔 Session ID:', sessionId || 'NEW SESSION');
     console.log('👤 User ID:', userId);
 
@@ -91,7 +92,8 @@ export async function sendMessage(req: Request, res: Response) {
     messages.push({
       role: 'user',
       content: message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      metadata: imageUrls && imageUrls.length > 0 ? { images: imageUrls } : undefined
     });
 
     // Get AI response

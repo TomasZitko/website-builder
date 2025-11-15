@@ -1,5 +1,6 @@
 import { genAI, GEMINI_MODEL } from '../config/gemini';
 import { buildCodeGenerationPrompt } from './prompts/codeGenerationPrompt';
+import { buildEnhancedCodePrompt } from './prompts/design/codeGenerationEnhanced';
 import { ConversationState } from './conversationTracker';
 import { searchDesignInspiration, formatInspirationForPrompt } from './inspiration.service';
 
@@ -26,8 +27,8 @@ export async function generateWebsiteCode(
     );
     const inspirationContext = formatInspirationForPrompt(inspirations);
 
-    // Build prompt from conversation state (with enhanced fields + inspiration)
-    const prompt = buildCodeGenerationPrompt({
+    // Build enhanced 2025 design prompt from conversation state
+    const prompt = buildEnhancedCodePrompt({
       websiteType: conversationState.websiteType || 'business',
       businessName: conversationState.businessName || 'Your Business',
       targetAudience: conversationState.targetAudience,

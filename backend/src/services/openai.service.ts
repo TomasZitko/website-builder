@@ -1,5 +1,6 @@
 import { openai, OPENAI_MODEL } from '../config/openai';
 import { SYSTEM_PROMPT } from './prompts/systemPrompt';
+import { CONVERSATIONAL_SYSTEM_PROMPT_2025 } from './prompts/conversationalEnhanced';
 import { extractConversationState, ConversationState } from './conversationTracker';
 
 interface Message {
@@ -15,9 +16,9 @@ export async function getChatResponse(
   tokensUsed: number;
 }> {
   try {
-    // Prepend system prompt
+    // Prepend enhanced 2025 conversational system prompt
     const fullMessages = [
-      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'system', content: CONVERSATIONAL_SYSTEM_PROMPT_2025 },
       ...messages
     ];
 

@@ -19,4 +19,9 @@ router.get('/:id/deployments', authenticateToken, websitesController.getDeployme
 router.post('/:id/domain', authenticateToken, websitesController.setupDomain);
 router.post('/:id/verify-domain', authenticateToken, websitesController.verifyDomain);
 
+// Version history routes
+router.get('/:id/versions', authenticateToken, websitesController.getVersions);
+router.post('/:id/versions', authenticateToken, websitesController.createVersion);
+router.post('/:id/versions/:versionId/restore', authenticateToken, websitesController.restoreVersion);
+
 export default router;

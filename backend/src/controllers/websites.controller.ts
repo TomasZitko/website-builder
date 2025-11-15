@@ -354,6 +354,187 @@ export async function getDeployments(req: Request, res: Response) {
 }
 
 /**
+ * Get version history for a website
+ */
+export async function getVersions(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const userId = req.userId!;
+
+    // Verify ownership
+    const { data: website } = await supabase
+      .from('websites')
+      .select('id')
+      .eq('id', id)
+      .eq('user_id', userId)
+      .single();
+
+    if (!website) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+
+    // Get versions
+    const { data: versions, error } = await supabase
+      .from('website_versions')
+      .select('*')
+      .eq('website_id', id)
+      .order('version_number', { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+
+    res.json({ versions: versions || [] });
+  } catch (error: any) {
+    console.error('Get versions error:', error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+/**
+ * Create a new version
+ */
+export async function createVersion(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const userId = req.userId!;
+    const { html_code, css_code, js_code, change_description } = req.body;
+
+    // Verify ownership
+    const { data: website } = await supabase
+      .from('websites')
+      .select('id')
+      .eq('id', id)
+      .eq('user_id', userId)
+      .single();
+
+    if (!website) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+
+    // Get latest version number
+    const { data: latestVersion } = await supabase
+      .from('website_versions')
+      .select('version_number')
+      .eq('website_id', id)
+      .order('version_number', { ascending: false })
+      .limit(1)
+      .single();
+
+    const nextVersionNumber = (latestVersion?.version_number || 0) + 1;
+
+    // Create new version
+    const { data: version, error } = await supabase
+      .from('website_versions')
+      .insert({
+        website_id: id,
+        version_number: nextVersionNumber,
+        html_code: html_code || '',
+        css_code: css_code || '',
+        js_code: js_code || '',
+        change_description: change_description || 'Manual save'
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Also update the main website table
+    await supabase
+      .from('websites')
+      .update({
+        html_code,
+        css_code,
+        js_code,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    res.status(201).json({ version });
+  } catch (error: any) {
+    console.error('Create version error:', error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+/**
+ * Restore a specific version
+ */
+export async function restoreVersion(req: Request, res: Response) {
+  try {
+    const { id, versionId } = req.params;
+    const userId = req.userId!;
+
+    // Verify ownership
+    const { data: website } = await supabase
+      .from('websites')
+      .select('id')
+      .eq('id', id)
+      .eq('user_id', userId)
+      .single();
+
+    if (!website) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+
+    // Get the version to restore
+    const { data: version, error: versionError } = await supabase
+      .from('website_versions')
+      .select('*')
+      .eq('id', versionId)
+      .eq('website_id', id)
+      .single();
+
+    if (versionError || !version) {
+      return res.status(404).json({ error: 'Version not found' });
+    }
+
+    // Create a new version from this restore point
+    const { data: latestVersion } = await supabase
+      .from('website_versions')
+      .select('version_number')
+      .eq('website_id', id)
+      .order('version_number', { ascending: false })
+      .limit(1)
+      .single();
+
+    const nextVersionNumber = (latestVersion?.version_number || 0) + 1;
+
+    const { data: newVersion, error: createError } = await supabase
+      .from('website_versions')
+      .insert({
+        website_id: id,
+        version_number: nextVersionNumber,
+        html_code: version.html_code,
+        css_code: version.css_code,
+        js_code: version.js_code,
+        change_description: `Restored from version ${version.version_number}`
+      })
+      .select()
+      .single();
+
+    if (createError) throw createError;
+
+    // Update the main website table
+    const { error: updateError } = await supabase
+      .from('websites')
+      .update({
+        html_code: version.html_code,
+        css_code: version.css_code,
+        js_code: version.js_code,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (updateError) throw updateError;
+
+    res.json({ version: newVersion });
+  } catch (error: any) {
+    console.error('Restore version error:', error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+/**
  * Helper: Generate subdomain from name
  */
 function generateSubdomain(name: string): string {

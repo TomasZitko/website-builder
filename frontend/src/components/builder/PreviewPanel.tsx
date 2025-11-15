@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { X, Eye, Code as CodeIcon, Ruler, Monitor, Tablet, Smartphone, Download, Share2 } from 'lucide-react';
+import { X, Eye, Code as CodeIcon, Ruler, Monitor, Tablet, Smartphone, Download, Share2, Split, History } from 'lucide-react';
 import { PreviewFrame } from '@/components/canvas/PreviewFrame';
+import { CodeEditor } from '@/components/canvas/CodeEditor';
+import { VersionHistory } from './VersionHistory';
 import { useWebsiteStore } from '@/store/websiteStore';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
-type Tab = 'preview' | 'code' | 'dimensions';
+type Tab = 'preview' | 'code' | 'split' | 'dimensions';
 type Device = 'desktop' | 'tablet' | 'mobile';
 
 interface PreviewPanelProps {
@@ -15,7 +17,8 @@ interface PreviewPanelProps {
 export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('preview');
   const [device, setDevice] = useState<Device>('desktop');
-  const { htmlCode, cssCode, jsCode } = useWebsiteStore();
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const { htmlCode, cssCode, jsCode, websiteId } = useWebsiteStore();
 
   const deviceSizes = {
     desktop: { width: '100%', height: '100%', label: 'Desktop', icon: Monitor },
@@ -26,42 +29,59 @@ export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
   const tabs = [
     { id: 'preview' as Tab, label: 'Preview', icon: Eye },
     { id: 'code' as Tab, label: 'Code', icon: CodeIcon },
+    { id: 'split' as Tab, label: 'Split', icon: Split },
     { id: 'dimensions' as Tab, label: 'Dimensions', icon: Ruler },
   ];
 
   return (
-    <div className="h-screen w-full border-l border-border bg-background flex flex-col">
-      {/* Header with Tabs */}
-      <div className="h-[50px] border-b border-border flex items-center justify-between px-4 bg-background shrink-0">
-            <div className="flex items-center gap-1">
-              {tabs.map((tab) => (
+    <div className="h-screen w-full border-l border-border bg-background flex">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header with Tabs */}
+        <div className="h-[50px] border-b border-border flex items-center justify-between px-4 bg-background shrink-0">
+              <div className="flex items-center gap-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-4 py-2 flex items-center gap-2 text-sm font-medium rounded-lg transition-colors ${
+                      activeTab === tab.id
+                        ? 'bg-accent text-white'
+                        : 'text-text-muted hover:text-text hover:bg-panel'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
                 <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 flex items-center gap-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === tab.id
+                  onClick={() => setShowVersionHistory(!showVersionHistory)}
+                  className={`p-2 rounded-lg transition-colors ${
+                    showVersionHistory
                       ? 'bg-accent text-white'
-                      : 'text-text-muted hover:text-text hover:bg-panel'
+                      : 'hover:bg-panel text-text-muted'
                   }`}
+                  aria-label="Toggle version history"
+                  title="Version History"
                 >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
+                  <History className="w-5 h-5" />
                 </button>
-              ))}
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-lg hover:bg-panel transition-colors"
+                  aria-label="Close preview"
+                >
+                  <X className="w-5 h-5 text-text-muted" />
+                </button>
+              </div>
             </div>
 
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-panel transition-colors"
-              aria-label="Close preview"
-            >
-              <X className="w-5 h-5 text-text-muted" />
-            </button>
-          </div>
-
-      {/* Toolbar (for Preview tab) */}
-      {activeTab === 'preview' && (
+      {/* Toolbar (for Preview and Split tabs) */}
+      {(activeTab === 'preview' || activeTab === 'split') && (
         <div className="h-[50px] border-b border-border flex items-center justify-between px-4 bg-panel shrink-0">
               {/* Device Selector */}
               <div className="flex items-center gap-1 bg-background border border-border rounded-lg p-1">
@@ -117,45 +137,33 @@ export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
         )}
 
         {activeTab === 'code' && (
-          <div className="space-y-4 max-w-4xl mx-auto">
-            {/* HTML */}
-            {htmlCode && (
-              <div className="bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-4 py-2 border-b border-border flex items-center justify-between bg-panel">
-                  <span className="text-sm font-semibold text-text">HTML</span>
-                  <button className="text-xs text-accent hover:underline">Copy</button>
-                </div>
-                <pre className="p-4 text-sm text-text overflow-auto max-h-96 bg-gray-900 text-gray-100">
-                  <code>{htmlCode}</code>
-                </pre>
-              </div>
-            )}
+          <div className="h-full">
+            <CodeEditor />
+          </div>
+        )}
 
-            {/* CSS */}
-            {cssCode && (
-              <div className="bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-4 py-2 border-b border-border flex items-center justify-between bg-panel">
-                  <span className="text-sm font-semibold text-text">CSS</span>
-                  <button className="text-xs text-accent hover:underline">Copy</button>
+        {activeTab === 'split' && (
+          <div className="h-full flex">
+            {/* Left: Code Editor (50%) */}
+            <div className="w-1/2 border-r border-border">
+              <CodeEditor />
+            </div>
+            {/* Right: Preview (50%) */}
+            <div className="w-1/2">
+              <div className="h-full flex items-center justify-center p-6">
+                <div
+                  className="bg-white rounded-lg shadow-2xl overflow-hidden"
+                  style={{
+                    width: deviceSizes[device].width,
+                    height: deviceSizes[device].height,
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                  }}
+                >
+                  <PreviewFrame />
                 </div>
-                <pre className="p-4 text-sm text-text overflow-auto max-h-96 bg-gray-900 text-gray-100">
-                  <code>{cssCode}</code>
-                </pre>
               </div>
-            )}
-
-            {/* JavaScript */}
-            {jsCode && (
-              <div className="bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-4 py-2 border-b border-border flex items-center justify-between bg-panel">
-                  <span className="text-sm font-semibold text-text">JavaScript</span>
-                  <button className="text-xs text-accent hover:underline">Copy</button>
-                </div>
-                <pre className="p-4 text-sm text-text overflow-auto max-h-96 bg-gray-900 text-gray-100">
-                  <code>{jsCode}</code>
-                </pre>
-              </div>
-            )}
+            </div>
           </div>
         )}
 
@@ -208,6 +216,12 @@ export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
           </div>
         )}
       </div>
+      </div>
+
+      {/* Version History Sidebar */}
+      {showVersionHistory && websiteId && (
+        <VersionHistory websiteId={websiteId} />
+      )}
     </div>
   );
 }

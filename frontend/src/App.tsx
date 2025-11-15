@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
 import { ToastProvider } from './contexts/ToastContext';
 import { Login } from './pages/Login';
@@ -95,6 +96,17 @@ function App() {
       <BrowserRouter>
         <AnimatedRoutes />
       </BrowserRouter>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#1e293b',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.1)',
+          },
+        }}
+      />
     </ToastProvider>
   );
 }

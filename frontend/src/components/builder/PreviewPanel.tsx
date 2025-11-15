@@ -3,6 +3,7 @@ import { X, Eye, Code as CodeIcon, Ruler, Monitor, Tablet, Smartphone, Download,
 import { PreviewFrame } from '@/components/canvas/PreviewFrame';
 import { useWebsiteStore } from '@/store/websiteStore';
 import { Button } from '@/components/ui/button';
+import { DeployButton } from '@/components/deployment/DeployButton';
 
 type Tab = 'preview' | 'code' | 'dimensions';
 type Device = 'desktop' | 'tablet' | 'mobile';
@@ -15,7 +16,7 @@ interface PreviewPanelProps {
 export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('preview');
   const [device, setDevice] = useState<Device>('desktop');
-  const { htmlCode, cssCode, jsCode } = useWebsiteStore();
+  const { htmlCode, cssCode, jsCode, websiteId, websiteName } = useWebsiteStore();
 
   const deviceSizes = {
     desktop: { width: '100%', height: '100%', label: 'Desktop', icon: Monitor },
@@ -86,6 +87,12 @@ export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
 
               {/* Actions */}
               <div className="flex items-center gap-2">
+                {websiteId && (
+                  <DeployButton
+                    projectId={websiteId}
+                    projectName={websiteName || 'my-website'}
+                  />
+                )}
                 <Button variant="outline" size="sm" className="gap-2">
                   <Share2 className="w-4 h-4" />
                   Share

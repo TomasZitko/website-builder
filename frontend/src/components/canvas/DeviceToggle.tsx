@@ -1,8 +1,8 @@
-import { Monitor, Tablet, Smartphone } from 'lucide-react';
+import { Monitor, Tablet, Smartphone, LucideIcon } from 'lucide-react';
 import { useWebsiteStore, DeviceType } from '@/store/websiteStore';
 import { cn } from '@/utils/cn';
 
-const devices: { type: DeviceType; icon: any; label: string }[] = [
+const devices: { type: DeviceType; icon: LucideIcon; label: string }[] = [
   { type: 'desktop', icon: Monitor, label: 'Desktop' },
   { type: 'tablet', icon: Tablet, label: 'Tablet' },
   { type: 'mobile', icon: Smartphone, label: 'Mobile' }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
 import { Thread } from "@/components/assistant-ui/thread";
@@ -8,7 +8,7 @@ import { PreviewPanel } from "@/components/builder/PreviewPanel";
 import { ChatHistorySidebar } from "@/components/chat/ChatHistorySidebar";
 import { useWebsiteStore } from "@/store/websiteStore";
 import { chatApi } from "@/api/chat";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Eye, Loader } from "lucide-react";
 
 export function BuilderNew() {
@@ -23,46 +23,9 @@ export function BuilderNew() {
 
   const hasCode = htmlCode || cssCode || jsCode;
 
-  // 🔥 LOAD SESSION ON MOUNT IF ID EXISTS
-  useEffect(() => {
-    if (sessionId && !sessionLoadedRef.current) {
-      loadSession(sessionId);
-      sessionLoadedRef.current = true;
-    } else if (!sessionId) {
-      // Clear session from localStorage when on /builder (no ID)
-      localStorage.removeItem('chat_session_id');
-      sessionLoadedRef.current = false;
-    }
-  }, [sessionId]);
-
-  // 🔥 AUTO-REDIRECT TO /builder/:id AFTER SESSION CREATION
-  useEffect(() => {
-    const storedSessionId = localStorage.getItem('chat_session_id');
-
-    // If we have a session ID in localStorage but not in URL, redirect
-    if (storedSessionId && !sessionId) {
-      console.log('🔀 Redirecting to session:', storedSessionId);
-      navigate(`/builder/${storedSessionId}`, { replace: true });
-    }
-  }, []); // Only run once on mount
-
-  // 🔥 AUTO-OPEN PREVIEW WHEN WEBSITE IS GENERATED
-  useEffect(() => {
-    if (hasCode && !hasCodeRef.current) {
-      // Code just appeared for the first time
-      console.log('🎉 Website generated! Auto-opening preview...');
-      setIsPreviewOpen(true);
-      hasCodeRef.current = true;
-    } else if (!hasCode) {
-      // Reset ref when code is cleared
-      hasCodeRef.current = false;
-    }
-  }, [hasCode]);
-
-  const loadSession = async (id: string) => {
+  const loadSession = useCallback(async (id: string) => {
     try {
       setIsLoadingSession(true);
-      console.log('📂 Loading session:', id);
 
       const { session } = await chatApi.getSession(id);
 
@@ -71,7 +34,6 @@ export function BuilderNew() {
 
       // If session has a website, load it into store
       if (session.website) {
-        console.log('🌐 Loading website from session');
         setCode(
           session.website.html_code || '',
           session.website.css_code || '',
@@ -84,21 +46,53 @@ export function BuilderNew() {
         );
         setIsPreviewOpen(true); // Auto-open preview for existing websites
       }
-
-      console.log('✅ Session loaded successfully');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Failed to load session:', error);
 
       // If session not found (404) or unauthorized (403), redirect to new chat
-      if (error.response?.status === 404 || error.response?.status === 403) {
-        console.log('🔀 Session not found, redirecting to new chat');
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || status === 403) {
         navigate('/builder', { replace: true });
         localStorage.removeItem('chat_session_id');
       }
     } finally {
       setIsLoadingSession(false);
     }
-  };
+  }, [navigate, setCode, setWebsiteInfo]);
+
+  // 🔥 LOAD SESSION ON MOUNT IF ID EXISTS
+  useEffect(() => {
+    if (sessionId && !sessionLoadedRef.current) {
+      loadSession(sessionId);
+      sessionLoadedRef.current = true;
+    } else if (!sessionId) {
+      // Clear session from localStorage when on /builder (no ID)
+      localStorage.removeItem('chat_session_id');
+      sessionLoadedRef.current = false;
+    }
+  }, [sessionId, loadSession]);
+
+  // 🔥 AUTO-REDIRECT TO /builder/:id AFTER SESSION CREATION
+  useEffect(() => {
+    const storedSessionId = localStorage.getItem('chat_session_id');
+
+    // If we have a session ID in localStorage but not in URL, redirect
+    if (storedSessionId && !sessionId) {
+      navigate(`/builder/${storedSessionId}`, { replace: true });
+    }
+  }, [navigate, sessionId]);
+
+  // 🔥 AUTO-OPEN PREVIEW WHEN WEBSITE IS GENERATED
+  useEffect(() => {
+    if (hasCode && !hasCodeRef.current) {
+      // Code just appeared for the first time
+      setIsPreviewOpen(true);
+      hasCodeRef.current = true;
+    } else if (!hasCode) {
+      // Reset ref when code is cleared
+      hasCodeRef.current = false;
+    }
+  }, [hasCode]);
 
   const handleNewChat = () => {
     setIsPreviewOpen(false);

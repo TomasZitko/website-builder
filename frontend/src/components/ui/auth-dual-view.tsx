@@ -41,7 +41,7 @@ interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(
-  ({ className, children, variant = 'primary', loading, contentClassName, onClick, disabled, ...props }, ref) => {
+  ({ className, children, variant: _variant = 'primary', loading, contentClassName, onClick, disabled, ...props }, ref) => {
     const handleWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
       const button = e.currentTarget.querySelector("button");
       if (button && e.target !== button && !disabled) button.click();
@@ -230,7 +230,7 @@ interface HeroSectionProps {
   view: 'login' | 'signup';
 }
 
-function HeroSection({ heroImageSrc, testimonials, view }: HeroSectionProps) {
+function HeroSection({ heroImageSrc, testimonials }: HeroSectionProps) {
   if (!heroImageSrc) return null;
 
   return (
@@ -269,8 +269,8 @@ function HeroSection({ heroImageSrc, testimonials, view }: HeroSectionProps) {
 
 interface FormContentProps {
   view: 'login' | 'signup';
-  formData: any;
-  setFormData: (data: any) => void;
+  formData: Record<string, string>;
+  setFormData: (data: Record<string, string>) => void;
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
   showConfirmPassword: boolean;

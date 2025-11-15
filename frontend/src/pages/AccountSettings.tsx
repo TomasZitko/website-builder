@@ -46,8 +46,9 @@ const AccountSettings: React.FC = () => {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
-    } catch (err: any) {
-      setPasswordError(err.response?.data?.message || 'Failed to change password');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to change password';
+      setPasswordError(errorMessage);
     } finally {
       setIsPasswordLoading(false);
     }
@@ -69,8 +70,9 @@ const AccountSettings: React.FC = () => {
       // Logout and redirect to home
       logout();
       navigate('/', { replace: true });
-    } catch (err: any) {
-      setDeleteError(err.response?.data?.message || 'Failed to delete account');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to delete account';
+      setDeleteError(errorMessage);
       setIsDeleteLoading(false);
     }
   };
@@ -230,8 +232,8 @@ const AccountSettings: React.FC = () => {
             {newPassword && (
               <div className="text-sm space-y-2 p-4 rounded-xl bg-foreground/5">
                 <p className="font-medium text-foreground mb-3">Password requirements:</p>
-                {passwordRequirements.map((req, index) => (
-                  <div key={index} className="flex items-center gap-2">
+                {passwordRequirements.map((req) => (
+                  <div key={req.label} className="flex items-center gap-2">
                     <span className={`w-5 h-5 rounded-full flex items-center justify-center ${
                       req.regex.test(newPassword)
                         ? 'bg-green-500/20 text-green-600'

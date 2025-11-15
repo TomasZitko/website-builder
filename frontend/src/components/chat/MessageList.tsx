@@ -45,7 +45,7 @@ export function MessageList() {
           key={message.id}
           role={message.role}
           content={message.content}
-          timestamp={message.timestamp}
+          timestamp={message.timestamp.toISOString()}
           messageType={message.messageType}
           metadata={message.metadata}
           onThemeSelect={handleThemeSelect}

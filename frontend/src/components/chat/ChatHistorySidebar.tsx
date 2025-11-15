@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chatApi, ChatSession } from '../../api/chat';
 import {
@@ -16,9 +16,19 @@ export function ChatHistorySidebar() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const deleteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     loadSessions();
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (deleteTimeoutRef.current) {
+        clearTimeout(deleteTimeoutRef.current);
+      }
+    };
   }, []);
 
   const loadSessions = async () => {
@@ -63,7 +73,11 @@ export function ChatHistorySidebar() {
       // First click - show confirm state
       setDeletingId(sessionId);
       // Reset after 3 seconds
-      setTimeout(() => setDeletingId(null), 3000);
+      // Clear any existing timeout first
+      if (deleteTimeoutRef.current) {
+        clearTimeout(deleteTimeoutRef.current);
+      }
+      deleteTimeoutRef.current = setTimeout(() => setDeletingId(null), 3000);
     }
   };
 

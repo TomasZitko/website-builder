@@ -27,8 +27,9 @@ export function PaymentModal({ isOpen, onClose, websiteId, websiteName }: Paymen
 
       // Redirect to Stripe Checkout
       window.location.href = response.url;
-    } catch (err: any) {
-      error(err.response?.data?.message || 'Failed to create checkout');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to create checkout';
+      error(errorMessage);
       setIsLoading(false);
     }
   };
@@ -70,7 +71,7 @@ export function PaymentModal({ isOpen, onClose, websiteId, websiteName }: Paymen
         <Button
           onClick={handlePayment}
           disabled={isLoading}
-          variant="primary"
+          variant="default"
           className="w-full"
         >
           <CreditCard className="w-4 h-4" />

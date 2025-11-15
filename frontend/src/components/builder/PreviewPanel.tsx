@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, Eye, Code as CodeIcon, Ruler, Monitor, Tablet, Smartphone, Download, Share2 } from 'lucide-react';
 import { PreviewFrame } from '@/components/canvas/PreviewFrame';
 import { useWebsiteStore } from '@/store/websiteStore';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 type Tab = 'preview' | 'code' | 'dimensions';
 type Device = 'desktop' | 'tablet' | 'mobile';
@@ -12,7 +12,7 @@ interface PreviewPanelProps {
   onClose: () => void;
 }
 
-export function PreviewPanel({ isOpen, onClose }: PreviewPanelProps) {
+export function PreviewPanel({ onClose }: PreviewPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('preview');
   const [device, setDevice] = useState<Device>('desktop');
   const { htmlCode, cssCode, jsCode } = useWebsiteStore();

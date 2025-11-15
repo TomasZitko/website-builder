@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo, useCallback, createContext, Children } from "react";
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo, useCallback, Children } from "react";
 // Importing icons from lucide-react
 import { ArrowRight, Mail, Gem, Lock, Eye, EyeOff, ArrowLeft, X, AlertCircle, PartyPopper, Loader, User } from "lucide-react";
 // Importing animation components from framer-motion
@@ -7,13 +7,11 @@ import { AnimatePresence, motion, useInView, Variants, Transition } from "framer
 import { GlassButton } from "./glass-button";
 
 // --- CONFETTI LOGIC ---
-import type { ReactNode } from "react"
 import type { GlobalOptions as ConfettiGlobalOptions, CreateTypes as ConfettiInstance, Options as ConfettiOptions } from "canvas-confetti"
 import confetti from "canvas-confetti"
 
 type Api = { fire: (options?: ConfettiOptions) => void }
 export type ConfettiRef = Api | null
-const ConfettiContext = createContext<Api>({} as Api)
 
 const Confetti = forwardRef<ConfettiRef, React.ComponentPropsWithRef<"canvas"> & { options?: ConfettiOptions; globalOptions?: ConfettiGlobalOptions; manualstart?: boolean }>((props, ref) => {
   const { options, globalOptions = { resize: true, useWorker: true }, manualstart = false, ...rest } = props
@@ -623,7 +621,7 @@ useEffect(() => {
                             <BlurFade delay={authStep === 'email' ? 0.25 * 5 : 0} inView={true} className="w-full">
                                 <div className="relative w-full">
                                     <AnimatePresence>
-                                        {authStep === "name" && <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.3, delay: 0.4 }} className="absolute -top-6 left-4 z-10"><label className="text-xs text-muted-foreground font-semibold">Email</label></motion.div>}
+                                        {authStep === "email" && <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.3, delay: 0.4 }} className="absolute -top-6 left-4 z-10"><label className="text-xs text-muted-foreground font-semibold">Email</label></motion.div>}
                                     </AnimatePresence>
                                     <div className="glass-input-wrap w-full"><div className="glass-input">
                                         <span className="glass-input-text-area"></span>

@@ -42,9 +42,9 @@ export function BuilderSidebar({ onNewChat }: BuilderSidebarProps) {
     <div className="w-[50px] h-full border-r border-border bg-white flex flex-col relative">
       {/* Sidebar Icons */}
       <div className="flex flex-col items-center py-3 gap-1 border-b border-border">
-        {sidebarItems.map((item, index) => (
+        {sidebarItems.map((item) => (
           <button
-            key={index}
+            key={item.label}
             onClick={item.onClick}
             className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-all group relative"
             aria-label={item.label}

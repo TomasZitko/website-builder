@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -11,7 +11,6 @@ import {
   Smartphone,
   Tablet,
   ExternalLink,
-  Calendar,
   MapPin
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
@@ -73,13 +72,7 @@ export function Analytics() {
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
 
-  useEffect(() => {
-    if (id) {
-      loadData();
-    }
-  }, [id, timeRange]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
 
@@ -97,7 +90,13 @@ export function Analytics() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id, timeRange]);
+
+  useEffect(() => {
+    if (id) {
+      loadData();
+    }
+  }, [id, loadData]);
 
   const formatNumber = (num: number): string => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -184,7 +183,7 @@ export function Analytics() {
               ].map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => setTimeRange(option.value as any)}
+                  onClick={() => setTimeRange(option.value as '7d' | '30d' | '90d')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                     timeRange === option.value
                       ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
@@ -278,8 +277,8 @@ export function Analytics() {
               Top Pages
             </h2>
             <div className="space-y-3">
-              {analytics.topPages.map((page, index) => (
-                <div key={index} className="flex items-center justify-between">
+              {analytics.topPages.map((page) => (
+                <div key={page.page} className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                       {page.page}
@@ -315,7 +314,7 @@ export function Analytics() {
                     dataKey="count"
                   >
                     {analytics.devices.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={entry.type} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -324,7 +323,7 @@ export function Analytics() {
             </div>
             <div className="mt-4 flex justify-center space-x-6">
               {analytics.devices.map((device, index) => (
-                <div key={index} className="flex items-center">
+                <div key={device.type} className="flex items-center">
                   {device.type === 'desktop' && <Monitor className="w-4 h-4 mr-2" style={{ color: COLORS[index] }} />}
                   {device.type === 'mobile' && <Smartphone className="w-4 h-4 mr-2" style={{ color: COLORS[index] }} />}
                   {device.type === 'tablet' && <Tablet className="w-4 h-4 mr-2" style={{ color: COLORS[index] }} />}
@@ -344,7 +343,7 @@ export function Analytics() {
             <div className="space-y-3">
               {analytics.referrers.length > 0 ? (
                 analytics.referrers.map((referrer, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div key={`${referrer.source || 'direct'}-${index}`} className="flex items-center justify-between">
                     <span className="text-sm text-gray-900 dark:text-white truncate">
                       {referrer.source || 'Direct'}
                     </span>
@@ -368,8 +367,8 @@ export function Analytics() {
             </h2>
             <div className="space-y-3">
               {analytics.countries.length > 0 ? (
-                analytics.countries.map((country, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                analytics.countries.map((country) => (
+                  <div key={country.country} className="flex items-center justify-between">
                     <div className="flex items-center">
                       <MapPin className="w-4 h-4 mr-2 text-gray-400" />
                       <span className="text-sm text-gray-900 dark:text-white">

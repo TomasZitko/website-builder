@@ -22,14 +22,10 @@ export function useChat() {
     setTyping(true);
 
     try {
-      console.log('📤 Sending message:', content);
-
       const response = await chatApi.sendMessage({
         message: content,
         sessionId: sessionId || undefined
       });
-
-      console.log('📥 Received response:', response);
 
       // Add AI response
       addMessage({
@@ -46,12 +42,12 @@ export function useChat() {
 
       // Check if should generate website
       if (response.codeGenerated) {
-        console.log('🎨 Triggering website generation...');
         await generateWebsite(response.conversationState, response.sessionId);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Chat error:', error);
-      showError(error.response?.data?.message || 'Failed to send message');
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to send message';
+      showError(errorMessage);
       addMessage({
         role: 'assistant',
         content: 'Sorry, something went wrong. Please try again.'
@@ -62,7 +58,7 @@ export function useChat() {
     }
   };
 
-  const generateWebsite = async (conversationState: any, sessionId: string) => {
+  const generateWebsite = async (conversationState: unknown, sessionId: string) => {
     setGenerating(true);
 
     addMessage({
@@ -71,14 +67,10 @@ export function useChat() {
     });
 
     try {
-      console.log('🚀 Generating with state:', conversationState);
-
       const response = await chatApi.generateWebsite({
         conversationState,
         sessionId
       });
-
-      console.log('✅ Generated website:', response.website.id);
 
       // Update preview with generated code
       setCode(
@@ -91,9 +83,10 @@ export function useChat() {
         role: 'assistant',
         content: '✅ Your website is ready! Check the preview on the right. You can now edit it or download it.'
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Generation error:', error);
-      showError(error.response?.data?.message || 'Failed to generate website');
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to generate website';
+      showError(errorMessage);
       addMessage({
         role: 'assistant',
         content: '❌ Failed to generate website. Please try describing your requirements again.'

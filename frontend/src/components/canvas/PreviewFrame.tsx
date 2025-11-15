@@ -1,44 +1,19 @@
 import { useEffect, useRef } from 'react';
 import { useWebsiteStore } from '@/store/websiteStore';
-import { cn } from '@/utils/cn';
-
-const deviceSizes = {
-  desktop: 'w-full h-full',
-  tablet: 'w-[768px] h-[1024px]',
-  mobile: 'w-[375px] h-[667px]'
-};
 
 export function PreviewFrame() {
-  const { htmlCode, cssCode, jsCode, deviceType } = useWebsiteStore();
+  const { htmlCode, cssCode, jsCode } = useWebsiteStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    console.log('🎨 PreviewFrame rendering with:', {
-      hasHTML: !!htmlCode,
-      hasCSS: !!cssCode,
-      hasJS: !!jsCode,
-      htmlLength: htmlCode?.length || 0,
-      cssLength: cssCode?.length || 0,
-      jsLength: jsCode?.length || 0
-    });
-
-    if (!iframeRef.current) {
-      console.warn('⚠️ Iframe ref not available');
-      return;
-    }
+    if (!iframeRef.current) return;
 
     const iframe = iframeRef.current;
     const document = iframe.contentDocument;
 
-    if (!document) {
-      console.warn('⚠️ Iframe document not available');
-      return;
-    }
+    if (!document) return;
 
-    if (!htmlCode && !cssCode) {
-      console.log('📭 No code to render yet');
-      return;
-    }
+    if (!htmlCode && !cssCode) return;
 
     // Combine HTML, CSS, and JS
     const fullHTML = `
@@ -60,7 +35,6 @@ export function PreviewFrame() {
       </html>
     `;
 
-    console.log('✅ Writing to iframe, HTML length:', fullHTML.length);
     document.open();
     document.write(fullHTML);
     document.close();

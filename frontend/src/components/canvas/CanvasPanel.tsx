@@ -94,13 +94,13 @@ export function CanvasPanel() {
             Share
           </Button>
           {isPaid ? (
-            <Button variant="primary" size="sm" className="gap-2" disabled={!hasCode}>
+            <Button variant="default" size="sm" className="gap-2" disabled={!hasCode}>
               <Download className="w-4 h-4" />
               Download
             </Button>
           ) : (
             <Button
-              variant="primary"
+              variant="default"
               size="sm"
               className="gap-2"
               disabled={!hasCode || !websiteId}

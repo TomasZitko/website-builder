@@ -2,14 +2,14 @@ import { motion } from 'framer-motion';
 import { Bot, User, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { ThemeCard } from './ThemeCard';
-import { themes, Theme } from '@/data/themes';
+import { themes } from '@/data/themes';
 
 interface ChatMessageProps {
   role: 'user' | 'assistant';
   content: string;
   timestamp?: string;
   messageType?: 'text' | 'theme-selection' | 'generating' | 'system';
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   onThemeSelect?: (themeId: string) => void;
 }
 
@@ -109,7 +109,7 @@ export function ChatMessage({
               <div className="space-y-2 mt-3">
                 {metadata.statusMessages.map((msg: string, idx: number) => (
                   <motion.div
-                    key={idx}
+                    key={`${msg}-${idx}`}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.5 }}

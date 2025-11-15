@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
@@ -11,6 +11,16 @@ const ResetPassword: React.FC = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,11 +49,12 @@ const ResetPassword: React.FC = () => {
       setMessage(response.data.message);
 
       // Redirect to login after 2 seconds
-      setTimeout(() => {
+      redirectTimeoutRef.current = setTimeout(() => {
         navigate('/login');
       }, 2000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to reset password');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to reset password';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -116,8 +127,8 @@ const ResetPassword: React.FC = () => {
           {newPassword && (
             <div className="text-sm space-y-1">
               <p className="font-medium text-gray-700 mb-2">Password requirements:</p>
-              {passwordRequirements.map((req, index) => (
-                <div key={index} className="flex items-center gap-2">
+              {passwordRequirements.map((req) => (
+                <div key={req.label} className="flex items-center gap-2">
                   <span className={req.regex.test(newPassword) ? 'text-green-500' : 'text-gray-400'}>
                     {req.regex.test(newPassword) ? '✓' : '○'}
                   </span>

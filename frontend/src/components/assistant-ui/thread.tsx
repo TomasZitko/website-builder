@@ -1,5 +1,4 @@
 import {
-  ArrowDownIcon,
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -21,7 +20,7 @@ import type { FC } from "react";
 import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import * as m from "motion/react-m";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { MarkdownText } from "@/components/assistant-ui/markdown-text";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
@@ -91,19 +90,20 @@ export const Thread: FC = () => {
   );
 };
 
-const ThreadScrollToBottom: FC = () => {
-  return (
-    <ThreadPrimitive.ScrollToBottom asChild>
-      <TooltipIconButton
-        tooltip="Scroll to bottom"
-        variant="outline"
-        className="aui-thread-scroll-to-bottom absolute -top-12 z-10 self-center rounded-full p-4 disabled:invisible dark:bg-background dark:hover:bg-accent"
-      >
-        <ArrowDownIcon />
-      </TooltipIconButton>
-    </ThreadPrimitive.ScrollToBottom>
-  );
-};
+// Unused for now - keeping for future use
+// const ThreadScrollToBottom: FC = () => {
+//   return (
+//     <ThreadPrimitive.ScrollToBottom asChild>
+//       <TooltipIconButton
+//         tooltip="Scroll to bottom"
+//         variant="outline"
+//         className="aui-thread-scroll-to-bottom absolute -top-12 z-10 self-center rounded-full p-4 disabled:invisible dark:bg-background dark:hover:bg-accent"
+//       >
+//         <ArrowDownIcon />
+//       </TooltipIconButton>
+//     </ThreadPrimitive.ScrollToBottom>
+//   );
+// };
 
 const ThreadWelcome: FC = () => {
   return (

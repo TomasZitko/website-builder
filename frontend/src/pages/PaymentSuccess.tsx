@@ -26,7 +26,7 @@ export function PaymentSuccess() {
 
         <Button
           onClick={() => navigate('/dashboard')}
-          variant="primary"
+          variant="default"
           className="w-full"
         >
           Go to Dashboard

@@ -36,8 +36,9 @@ export function useWebsites() {
       setIsLoading(true);
       const response = await apiClient.get('/api/v1/websites');
       setWebsites(response.data.websites || []);
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to fetch websites');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to fetch websites';
+      showError(errorMessage);
       setWebsites([]);
     } finally {
       setIsLoading(false);
@@ -62,8 +63,9 @@ export function useWebsites() {
       await fetchWebsites();
       showSuccess('Website created successfully!');
       return response.data.website;
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to create website');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to create website';
+      showError(errorMessage);
       throw err;
     }
   };
@@ -74,8 +76,9 @@ export function useWebsites() {
       await fetchWebsites();
       showSuccess('Website updated successfully!');
       return response.data.website;
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to update website');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to update website';
+      showError(errorMessage);
       throw err;
     }
   };
@@ -85,8 +88,9 @@ export function useWebsites() {
       await apiClient.delete(`/api/v1/websites/${id}`);
       await fetchWebsites();
       showSuccess('Website deleted successfully!');
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to delete website');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to delete website';
+      showError(errorMessage);
       throw err;
     }
   };
@@ -103,8 +107,9 @@ export function useWebsites() {
       }
 
       return response.data;
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to deploy website');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to deploy website';
+      showError(errorMessage);
       throw err;
     }
   };
@@ -116,8 +121,9 @@ export function useWebsites() {
       });
       showSuccess('Domain setup initiated. Please add DNS records.');
       return response.data;
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to setup domain');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to setup domain';
+      showError(errorMessage);
       throw err;
     }
   };
@@ -128,16 +134,17 @@ export function useWebsites() {
         domain
       });
 
-      if (response.verified) {
+      if (response.data.verified) {
         showSuccess('Domain verified successfully!');
         await fetchWebsites();
       } else {
-        showError(response.error || 'Domain verification failed');
+        showError(response.data.error || 'Domain verification failed');
       }
 
       return response.data;
-    } catch (err: any) {
-      showError(err.response?.data?.error || 'Failed to verify domain');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to verify domain';
+      showError(errorMessage);
       throw err;
     }
   };

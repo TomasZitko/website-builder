@@ -22,8 +22,9 @@ const ForgotPassword: React.FC = () => {
       );
 
       setMessage(response.data.message);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send reset email');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to send reset email';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

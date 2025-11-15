@@ -14,7 +14,7 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/store/authStore";
 
 export function ProjectSidebar({

@@ -12,10 +12,12 @@ const OAuthCallback: React.FC = () => {
   const setAuth = useAuthStore((state) => state.setAuth);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
     const handleOAuthCallback = async () => {
       if (error) {
         setStatus('error');
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           navigate('/login');
         }, 3000);
         return;
@@ -23,7 +25,7 @@ const OAuthCallback: React.FC = () => {
 
       if (!token || !refreshToken) {
         setStatus('error');
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           navigate('/login');
         }, 3000);
         return;
@@ -56,19 +58,26 @@ const OAuthCallback: React.FC = () => {
         setStatus('success');
 
         // Redirect to dashboard after 1 second
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           navigate('/dashboard');
         }, 1000);
       } catch (err) {
         console.error('OAuth callback error:', err);
         setStatus('error');
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           navigate('/login');
         }, 3000);
       }
     };
 
     handleOAuthCallback();
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [token, refreshToken, error, navigate, setAuth]);
 
   return (

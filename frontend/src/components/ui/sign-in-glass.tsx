@@ -12,7 +12,7 @@ interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(
-  ({ className, children, variant = 'primary', loading, contentClassName, onClick, ...props }, ref) => {
+  ({ className, children, variant: _variant = 'primary', loading, contentClassName, onClick, ...props }, ref) => {
     // This wrapper fixes a click bug
     const handleWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
       const button = e.currentTarget.querySelector("button");

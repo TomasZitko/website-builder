@@ -3,11 +3,7 @@ import { motion, useInView, Variants } from 'framer-motion';
 import { ArrowRight, Paperclip, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ComposerPrimitive, ThreadPrimitive } from '@assistant-ui/react';
-import { Button } from '@/components/ui/button';
 import {
-  Code2,
-  Palette,
-  Layers,
   Rocket,
   MonitorIcon,
   ShoppingBag,
@@ -24,7 +20,7 @@ interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(
-  ({ className, children, variant = 'primary', loading, contentClassName, onClick, ...props }, ref) => {
+  ({ className, children, variant: _variant = 'primary', loading, contentClassName, onClick, ...props }, ref) => {
     const handleWrapperClick = (e: React.MouseEvent<HTMLDivElement>) => {
       // Prevent duplicate clicks - only trigger if clicking the wrapper, not the button
       if (e.target === e.currentTarget) {

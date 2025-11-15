@@ -15,7 +15,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   messageType?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -46,7 +46,7 @@ export const chatApi = {
   },
 
   generateWebsite: async (data: {
-    conversationState: any;
+    conversationState: unknown;
     sessionId: string;
   }) => {
     const response = await apiClient.post('/api/v1/websites/generate', data);

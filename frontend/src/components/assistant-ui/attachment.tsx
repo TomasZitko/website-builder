@@ -9,12 +9,11 @@ import {
   useAssistantState,
   useAssistantApi,
 } from "@assistant-ui/react";
-import { shallow } from "zustand/shallow";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/Tooltip";
 import {
   Dialog,
   DialogTitle,
@@ -47,15 +46,14 @@ const useFileSrc = (file: File | undefined) => {
 
 const useAttachmentSrc = () => {
   const { file, src } = useAssistantState(
-    ({ attachment }): { file?: File; src?: string } => {
+    ({ attachment }: { attachment: { type: string; file?: File; content?: Array<{ type: string; image?: string }> } }): { file?: File; src?: string } => {
       if (attachment.type !== "image") return {};
       if (attachment.file) return { file: attachment.file };
       const src = attachment.content?.filter((c) => c.type === "image")[0]
         ?.image;
       if (!src) return {};
       return { src };
-    },
-    shallow,
+    }
   );
 
   return useFileSrc(file) ?? src;
@@ -142,9 +140,10 @@ const AttachmentUI: FC = () => {
         return "Document";
       case "file":
         return "File";
-      default:
+      default: {
         const _exhaustiveCheck: never = type;
         throw new Error(`Unknown attachment type: ${_exhaustiveCheck}`);
+      }
     }
   });
 

@@ -6,7 +6,7 @@ export interface Message {
   content: string;
   timestamp: Date;
   messageType?: 'text' | 'theme-selection' | 'generating' | 'system';
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 interface ChatState {

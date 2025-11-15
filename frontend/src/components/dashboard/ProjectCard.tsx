@@ -102,9 +102,9 @@ export function ProjectCard({ website, onDelete, index = 0 }: ProjectCardProps) 
 
           {/* Preview Image Section */}
           <div className="relative aspect-video overflow-hidden">
-            {website.previewImageUrl ? (
+            {website.preview_image_url ? (
               <img
-                src={website.previewImageUrl}
+                src={website.preview_image_url}
                 alt={website.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -167,14 +167,16 @@ export function ProjectCard({ website, onDelete, index = 0 }: ProjectCardProps) 
 
             {/* Status Badges */}
             <div className="flex flex-wrap gap-2">
-              {website.isPaid && <Badge variant="success">Paid</Badge>}
-              {website.isPublished && <Badge variant="info">Published</Badge>}
-              {!website.isPaid && <Badge variant="warning">Unpaid</Badge>}
+              {website.deployment_status === 'live' && <Badge variant="success">Live</Badge>}
+              {website.deployment_status === 'deploying' && <Badge variant="info">Deploying</Badge>}
+              {website.deployment_status === 'draft' && <Badge variant="warning">Draft</Badge>}
+              {website.deployment_status === 'failed' && <Badge variant="error">Failed</Badge>}
+              {website.deployment_status === 'archived' && <Badge variant="default">Archived</Badge>}
             </div>
 
             {/* Created Date */}
             <p className="text-xs text-foreground/40">
-              Created {new Date(website.createdAt).toLocaleDateString('en-US', {
+              Created {new Date(website.created_at).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric'
@@ -199,7 +201,7 @@ export function ProjectCard({ website, onDelete, index = 0 }: ProjectCardProps) 
           </p>
           <div className="flex gap-3">
             <Button
-              variant="danger"
+              variant="destructive"
               onClick={handleDelete}
               className="flex-1"
             >

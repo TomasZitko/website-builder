@@ -24,20 +24,16 @@ export function useWebsiteChatRuntime() {
       let messageText = '';
       if (Array.isArray(lastMessage.content)) {
         messageText = lastMessage.content
-          .filter((c: any) => c.type === 'text')
-          .map((c: any) => c.text || '')
+          .filter((c: { type: string }) => c.type === 'text')
+          .map((c: { text?: string }) => c.text || '')
           .join('')
           .trim();
       } else if (typeof lastMessage.content === 'string') {
-        messageText = lastMessage.content.trim();
+        messageText = (lastMessage.content as string).trim();
       }
-
-      console.log('🚀 Sending message:', messageText);
-      console.log('📝 Session ID:', sessionIdRef.current);
 
       // Validate message is not empty
       if (!messageText) {
-        console.warn('⚠️ Empty message detected, skipping API call');
         return {
           content: [
             {
@@ -69,18 +65,15 @@ export function useWebsiteChatRuntime() {
         }
 
         const data = await response.json();
-        console.log('✅ Got response:', data);
 
         // ✅ Store sessionId if returned (first message creates session)
         if (data.sessionId && !sessionIdRef.current) {
           sessionIdRef.current = data.sessionId;
           localStorage.setItem(SESSION_STORAGE_KEY, data.sessionId);
-          console.log('💾 Saved session ID:', data.sessionId);
         }
 
         // 🔥 CHECK IF WEBSITE WAS GENERATED
         if (data.generatedWebsite && !data.generatedWebsite.error) {
-          console.log('🎨 Website generated! Updating store...');
 
           // Update website store with generated code
           setCode(
@@ -98,11 +91,8 @@ export function useWebsiteChatRuntime() {
 
           // Stop generating state
           setGenerating(false);
-
-          console.log('✅ Website code loaded into store!');
         } else if (data.codeGenerated) {
           // If generation started, set generating flag
-          console.log('⏳ Generation in progress...');
           setGenerating(true);
         }
 
@@ -114,10 +104,9 @@ export function useWebsiteChatRuntime() {
             },
           ],
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Don't log abort errors (they're expected when cancelling)
-        if (error.name === 'AbortError') {
-          console.log('⏹️ Request aborted');
+        if ((error as Error).name === 'AbortError') {
           throw error; // Re-throw to let the library handle it
         }
 

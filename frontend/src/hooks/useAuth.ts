@@ -20,8 +20,9 @@ export function useAuth() {
       const response = await authApi.register(data);
       success(response.message);
       return true;
-    } catch (err: any) {
-      error(err.response?.data?.message || 'Registration failed');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Registration failed';
+      error(errorMessage);
       return false;
     } finally {
       setIsLoading(false);
@@ -41,8 +42,9 @@ export function useAuth() {
 
       success('Login successful!');
       return true;
-    } catch (err: any) {
-      error(err.response?.data?.message || 'Login failed');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Login failed';
+      error(errorMessage);
       return false;
     } finally {
       setIsLoading(false);

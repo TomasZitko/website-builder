@@ -32,8 +32,8 @@ export function Dropdown({ trigger, items }: DropdownProps) {
       >
         <Menu.Items className="absolute right-0 mt-2 w-56 bg-panel border border-border rounded-lg shadow-xl focus:outline-none">
           <div className="py-1">
-            {items.map((item, index) => (
-              <Menu.Item key={index}>
+            {items.map((item) => (
+              <Menu.Item key={item.label}>
                 {({ active }) => (
                   <button
                     onClick={item.onClick}

@@ -30,9 +30,10 @@ const VerifyEmail: React.FC = () => {
         setTimeout(() => {
           navigate('/login');
         }, 3000);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setStatus('error');
-        setMessage(err.response?.data?.message || 'Email verification failed');
+        const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Email verification failed';
+        setMessage(errorMessage);
       }
     };
 

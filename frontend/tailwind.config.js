@@ -5,6 +5,13 @@ export default {
   theme: {
     extend: {
       colors: {
+        glass: {
+          50: 'rgba(255, 255, 255, 0.05)',
+          100: 'rgba(255, 255, 255, 0.1)',
+          200: 'rgba(255, 255, 255, 0.2)',
+          300: 'rgba(255, 255, 255, 0.3)',
+          400: 'rgba(255, 255, 255, 0.4)',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -55,7 +62,8 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
       },
       keyframes: {
         'fade-in': {
@@ -105,7 +113,19 @@ export default {
         'slide-out-to-right': {
           from: { transform: 'translateX(0)', opacity: '1' },
           to: { transform: 'translateX(10px)', opacity: '0' }
-        }
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        glow: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.2s ease-out',
@@ -119,7 +139,10 @@ export default {
         'slide-out-to-top': 'slide-out-to-top 0.3s ease-out',
         'slide-out-to-bottom': 'slide-out-to-bottom 0.3s ease-out',
         'slide-out-to-left': 'slide-out-to-left 0.3s ease-out',
-        'slide-out-to-right': 'slide-out-to-right 0.3s ease-out'
+        'slide-out-to-right': 'slide-out-to-right 0.3s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite',
+        'shimmer': 'shimmer 3s linear infinite',
       },
       backdropBlur: {
         xs: '2px'

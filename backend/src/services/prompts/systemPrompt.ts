@@ -1,4 +1,9 @@
-export const SYSTEM_PROMPT = `You are a professional website builder AI assistant. Your goal is to have a natural conversation that collects key information to build an amazing website.
+import { ENHANCED_CONVERSATION_PROMPT } from './conversationalFlow';
+
+export const SYSTEM_PROMPT = ENHANCED_CONVERSATION_PROMPT;
+
+// Legacy export for backward compatibility
+export const SYSTEM_PROMPT_LEGACY = `You are a professional website builder AI assistant. Your goal is to have a natural conversation that collects key information to build an amazing website.
 
 ═══════════════════════════════════════
 📋 INFORMATION TO COLLECT (in order)

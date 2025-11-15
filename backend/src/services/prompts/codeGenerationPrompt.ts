@@ -1,4 +1,5 @@
 import { getThemeGuidelines } from '../../data/themes';
+import { DESIGN_MASTER_SYSTEM_PROMPT } from './designMaster';
 
 export function buildCodeGenerationPrompt(requirements: {
   websiteType?: string;
@@ -37,83 +38,75 @@ export function buildCodeGenerationPrompt(requirements: {
   // Get theme guidelines if theme is selected
   const themeGuidelines = selectedTheme ? getThemeGuidelines(selectedTheme) : '';
 
-  return `You are an ELITE web designer. Create a STUNNING, professional website that would cost $5000+ if done by an agency.
+  return `${DESIGN_MASTER_SYSTEM_PROMPT}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 BUSINESS INFORMATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Business Name: ${businessName || 'Business Name'}
-Industry: ${websiteType || 'business'}
-Target Audience: ${targetAudience || 'general audience'}
-Main Goal: ${mainGoal || 'provide information'}
-${location ? `Location: ${location}` : ''}
-${pricing ? `Pricing: ${pricing}` : ''}
-${specialFeatures ? `Special Features: ${specialFeatures}` : ''}
-${brandColors ? `Brand Colors: ${brandColors}` : ''}
-Website Type: ${pagesList.join(', ')}
-Design Style: ${style || 'modern'}
-
-IMPORTANT: Tailor ALL content, copy, and design decisions to the target audience (${targetAudience}) and main goal (${mainGoal}).
-
-${themeGuidelines ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🎨 THEME GUIDELINES\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${themeGuidelines}\n` : ''}
-
-${inspirationContext ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 ${inspirationContext}\n` : ''}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✨ DESIGN EXCELLENCE REQUIREMENTS
+📋 PROJECT REQUIREMENTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 VISUAL IMPACT:
+BUSINESS NAME: ${businessName || 'Business Name'}
+INDUSTRY: ${websiteType || 'business'}
+TARGET AUDIENCE: ${targetAudience || 'general audience'}
+MAIN GOAL: ${mainGoal || 'provide information'}
+${location ? `LOCATION: ${location}` : ''}
+${pricing ? `PRICING: ${pricing}` : ''}
+${specialFeatures ? `SPECIAL FEATURES: ${specialFeatures}` : ''}
+${brandColors ? `BRAND COLORS: ${brandColors}` : ''}
+WEBSITE TYPE: ${pagesList.join(', ')}
+DESIGN STYLE: ${style || 'modern'}
+
+CRITICAL: Tailor ALL content, copy, and design decisions to:
+- Target Audience: ${targetAudience || 'general audience'}
+- Main Goal: ${mainGoal || 'provide information'}
+- Industry: ${websiteType || 'business'}
+
+${themeGuidelines ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🎨 SELECTED THEME GUIDELINES\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${themeGuidelines}\n` : ''}
+
+${inspirationContext ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 DESIGN INSPIRATION\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${inspirationContext}\n` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 STYLE-SPECIFIC REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 ${style === 'modern'
-  ? `- Ultra-clean minimalist design with generous white space
-- Contemporary typography (Inter, Poppins style)
-- Subtle gradients and soft shadows
-- Accent color: #6366F1 (indigo)
-- Background: pure white #FFFFFF
-- Text: #1F2937 (dark gray)
-- Use CSS backdrop-filter for glassmorphism effects`
+  ? `MODERN MINIMAL STYLE:
+- Ultra-clean design with generous white space (min 4rem between sections)
+- Contemporary typography (Inter, Plus Jakarta Sans, Outfit)
+- Glassmorphism: backdrop-filter: blur(20px) on cards and nav
+- Subtle gradients: linear-gradient(135deg, #6366f1, #8b5cf6)
+- Soft shadows: box-shadow: 0 8px 32px rgba(0,0,0,0.1)
+- Primary color: #6366F1 (indigo)
+- Background: Clean white #FFFFFF or subtle gradient
+- Text: #1F2937 (dark gray), high contrast
+- Accent: #8B5CF6 (purple) for CTAs
+- Border radius: min 1rem for cards, 0.5rem for buttons
+- Smooth transitions: 300ms cubic-bezier(0.4, 0, 0.2, 1)`
   : ''}${style === 'bold'
-  ? `- Vibrant, energetic color palette
-- Dark mode first (#1A1A2E background)
-- Bold gradients: linear-gradient(135deg, #FF6B6B, #4ECDC4)
-- Large, impactful typography
-- Neon accents and glowing effects
-- High contrast for maximum impact`
+  ? `BOLD & VIBRANT STYLE:
+- Dark-first design (#0f0f23 or #1a1a2e background)
+- Vibrant gradients: linear-gradient(135deg, #FF6B6B, #4ECDC4)
+- Large, impactful typography (H1: 4rem+, font-weight: 800)
+- Neon glow effects: box-shadow: 0 0 20px rgba(primary, 0.6)
+- High contrast colors for maximum impact
+- Animated gradient backgrounds
+- Bold CTAs with glow on hover
+- Electric accent colors (#00f2fe, #ff6b9d)
+- Strong geometric shapes
+- Energetic animations (scale, pulse)`
   : ''}${style === 'professional'
-  ? `- Corporate sophistication
-- Classic blue palette (#2563EB primary)
-- Clean sans-serif fonts (system-ui)
-- Structured grid layouts
+  ? `PROFESSIONAL CORPORATE STYLE:
+- Classic corporate aesthetic
+- Primary: #2563EB (professional blue)
+- Clean sans-serif fonts (Inter, system-ui)
+- Structured grid layouts with clear hierarchy
 - Professional photography placeholders
-- Trustworthy, authoritative vibe`
+- Conservative color palette (blues, grays, white)
+- Subtle shadows: box-shadow: 0 4px 16px rgba(0,0,0,0.08)
+- Trustworthy, authoritative vibe
+- Clear information architecture
+- Minimal but purposeful animations
+- Business-focused iconography`
   : ''}
-
-🚀 TECHNICAL EXCELLENCE:
-1. ✅ Pure HTML5, CSS3, vanilla JavaScript (NO frameworks)
-2. ✅ Mobile-first responsive (breakpoints: 640px, 768px, 1024px, 1280px)
-3. ✅ Smooth scroll behavior with offset for fixed header
-4. ✅ Intersection Observer for scroll animations
-5. ✅ CSS Grid + Flexbox for layouts
-6. ✅ CSS Custom Properties for theming
-7. ✅ Optimized for 60fps animations
-8. ✅ Accessible (ARIA labels, semantic HTML)
-
-🎬 ANIMATIONS & INTERACTIONS:
-- Fade-in on scroll (using Intersection Observer)
-- Hover effects on all interactive elements
-- Smooth color transitions (300ms ease)
-- Parallax scrolling on hero section
-- Mobile hamburger menu with smooth slide-in
-- Card hover lift effects (transform: translateY(-10px))
-- Button ripple effects
-- Smooth page loading animation
-
-📱 MOBILE MENU:
-- Hamburger icon (animated to X on click)
-- Full-screen overlay menu
-- Slide-in from right with backdrop blur
-- Touch-friendly 60px tap targets
-- Close on link click
 
 ${isMultiPage ? `
 📄 MULTI-PAGE STRUCTURE:

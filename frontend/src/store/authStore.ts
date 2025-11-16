@@ -7,6 +7,7 @@ interface User {
   firstName: string;
   lastName: string;
   subscriptionTier: string;
+  accountType?: 'personal' | 'freelancer' | 'agency';
 }
 
 interface AuthState {

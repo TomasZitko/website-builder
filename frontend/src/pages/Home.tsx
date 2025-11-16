@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Zap, Globe, DollarSign, Users, Sparkles, Check, ArrowRight, Code, TrendingUp } from 'lucide-react';
+import { Navbar } from '@/components/layout/Navbar';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -73,38 +74,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              <Sparkles className="w-8 h-8 text-indigo-600" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                WebChat.ai
-              </span>
-            </div>
-            <div className="hidden md:flex space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-indigo-600 transition">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-indigo-600 transition">Pricing</a>
-              <a href="#how-it-works" className="text-gray-600 hover:text-indigo-600 transition">How It Works</a>
-            </div>
-            <div className="flex space-x-4">
-              <button
-                onClick={() => navigate('/login')}
-                className="px-4 py-2 text-gray-700 hover:text-indigo-600 transition"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => navigate('/register')}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-lg shadow-indigo-200"
-              >
-                Get Started
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4">
@@ -182,7 +152,7 @@ export default function Home() {
                   <div className="w-3 h-3 rounded-full bg-green-400"></div>
                 </div>
                 <div className="flex-1 text-center text-white text-sm font-medium">
-                  Chat with AI ’ Beautiful Website
+                  Chat with AI ï¿½ Beautiful Website
                 </div>
               </div>
               <div className="aspect-video bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center">

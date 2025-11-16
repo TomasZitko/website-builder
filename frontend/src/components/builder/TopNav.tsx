@@ -1,5 +1,5 @@
-import { Home, Plus, Settings, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Home, Plus, Settings, LogOut, Users, Briefcase } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 
 const Logo = () => (
@@ -12,12 +12,17 @@ const Logo = () => (
 
 export function TopNav() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuthStore();
+
+  const isDeveloper = user?.accountType === 'freelancer' || user?.accountType === 'agency';
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <div className="h-[72px] w-full border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
@@ -33,6 +38,57 @@ export function TopNav() {
               WebChat<span className="text-muted-foreground">.ai</span>
             </span>
           </button>
+
+          <div className="h-8 w-px bg-border" />
+
+          {/* Navigation Links */}
+          <nav className="flex items-center gap-1">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                isActive('/dashboard')
+                  ? 'bg-foreground/10 text-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <Home className="w-4 h-4" />
+                Dashboard
+              </span>
+            </button>
+
+            {isDeveloper && (
+              <>
+                <button
+                  onClick={() => navigate('/clients')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    isActive('/clients')
+                      ? 'bg-foreground/10 text-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Clients
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => navigate('/portfolio')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    isActive('/portfolio')
+                      ? 'bg-foreground/10 text-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Briefcase className="w-4 h-4" />
+                    Portfolio
+                  </span>
+                </button>
+              </>
+            )}
+          </nav>
 
           <div className="h-8 w-px bg-border" />
 

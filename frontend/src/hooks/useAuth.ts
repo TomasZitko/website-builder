@@ -14,6 +14,8 @@ export function useAuth() {
     password: string;
     firstName: string;
     lastName: string;
+    accountType?: 'personal' | 'agency';
+    agencyName?: string;
   }) => {
     setIsLoading(true);
     try {

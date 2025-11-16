@@ -14,6 +14,8 @@ import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import OAuthCallback from './pages/OAuthCallback';
 import AccountSettings from './pages/AccountSettings';
+import Clients from './pages/Clients';
+import Portfolio from './pages/Portfolio';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -76,6 +78,22 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <AccountSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            <ProtectedRoute>
+              <Clients />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <ProtectedRoute>
+              <Portfolio />
             </ProtectedRoute>
           }
         />

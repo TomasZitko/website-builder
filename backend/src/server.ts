@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.routes'
 import chatRoutes from './routes/chat.routes'
 import websiteRoutes from './routes/website.routes'
 import paymentRoutes from './routes/payment.routes'
+import b2b2cRoutes from './routes/b2b2c.routes'
 import { loginLimiter, registerLimiter } from './middleware/rateLimit.middleware'
 
 // Load environment variables
@@ -55,6 +56,7 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/chat', chatRoutes)
 app.use('/api/v1/websites', websiteRoutes)
 app.use('/api/v1/payment', paymentRoutes)
+app.use('/api/v1/b2b2c', b2b2cRoutes) // B2B2C: Portfolio, Clients, Subscriptions
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

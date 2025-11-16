@@ -10,4 +10,8 @@ router.get('/:id', authenticateToken, websiteController.getWebsiteById);
 router.put('/:id', authenticateToken, websiteController.updateWebsite);
 router.delete('/:id', authenticateToken, websiteController.deleteWebsite);
 
+// Version history routes
+router.get('/:id/versions', authenticateToken, websiteController.getWebsiteVersions);
+router.post('/:id/versions/:versionId/restore', authenticateToken, websiteController.restoreVersion);
+
 export default router;

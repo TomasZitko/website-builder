@@ -199,3 +199,128 @@ export async function deleteWebsite(req: Request, res: Response) {
     });
   }
 }
+
+export async function getWebsiteVersions(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    // Verify ownership
+    const { data: website } = await supabase
+      .from('websites')
+      .select('user_id')
+      .eq('id', id)
+      .single();
+
+    if (!website || website.user_id !== userId) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+
+    // Get all versions for this website
+    const { data: versions, error } = await supabase
+      .from('website_versions')
+      .select('*')
+      .eq('website_id', id)
+      .order('version_number', { ascending: false });
+
+    if (error) throw error;
+
+    res.json({
+      versions: versions || []
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: 'Failed to fetch versions',
+      message: error.message
+    });
+  }
+}
+
+export async function restoreVersion(req: Request, res: Response) {
+  try {
+    const { id, versionId } = req.params;
+    const userId = req.userId;
+
+    // Verify ownership
+    const { data: website } = await supabase
+      .from('websites')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', userId)
+      .single();
+
+    if (!website) {
+      return res.status(404).json({ error: 'Website not found' });
+    }
+
+    // Get the version to restore
+    const { data: version, error: versionError } = await supabase
+      .from('website_versions')
+      .select('*')
+      .eq('id', versionId)
+      .eq('website_id', id)
+      .single();
+
+    if (versionError || !version) {
+      return res.status(404).json({ error: 'Version not found' });
+    }
+
+    // Create a new version with current state before restoring
+    const { data: currentVersions } = await supabase
+      .from('website_versions')
+      .select('version_number')
+      .eq('website_id', id)
+      .order('version_number', { ascending: false })
+      .limit(1);
+
+    const nextVersionNumber = currentVersions && currentVersions.length > 0
+      ? currentVersions[0].version_number + 1
+      : 1;
+
+    await supabase
+      .from('website_versions')
+      .insert({
+        website_id: id,
+        version_number: nextVersionNumber,
+        html_code: website.html_code,
+        css_code: website.css_code,
+        js_code: website.js_code,
+        change_description: `Auto-save before restoring to v${version.version_number}`
+      });
+
+    // Restore the version
+    const { error: updateError } = await supabase
+      .from('websites')
+      .update({
+        html_code: version.html_code,
+        css_code: version.css_code,
+        js_code: version.js_code,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (updateError) throw updateError;
+
+    // Create a new version for the restore
+    await supabase
+      .from('website_versions')
+      .insert({
+        website_id: id,
+        version_number: nextVersionNumber + 1,
+        html_code: version.html_code,
+        css_code: version.css_code,
+        js_code: version.js_code,
+        change_description: `Restored from v${version.version_number}`
+      });
+
+    res.json({
+      message: 'Version restored successfully',
+      restoredVersion: version.version_number
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: 'Failed to restore version',
+      message: error.message
+    });
+  }
+}

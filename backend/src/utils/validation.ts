@@ -9,7 +9,10 @@ export const registerSchema = z.object({
     .regex(/[0-9]/, 'Must contain number')
     .regex(/[^A-Za-z0-9]/, 'Must contain special character'),
   firstName: z.string().min(1).max(100),
-  lastName: z.string().min(1).max(100)
+  lastName: z.string().min(1).max(100),
+  // Agency Platform fields (optional)
+  accountType: z.enum(['personal', 'agency']).optional().default('personal'),
+  agencyName: z.string().min(2).max(255).optional()
 });
 
 export const loginSchema = z.object({

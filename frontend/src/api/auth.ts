@@ -6,6 +6,8 @@ export const authApi = {
     password: string;
     firstName: string;
     lastName: string;
+    accountType?: 'personal' | 'agency';
+    agencyName?: string;
   }) => {
     const response = await apiClient.post('/api/v1/auth/register', data);
     return response.data;

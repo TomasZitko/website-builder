@@ -31,6 +31,9 @@ export interface Database {
           email_verification_token: string | null
           password_reset_token: string | null
           password_reset_expires: string | null
+          // Agency Platform fields
+          account_type: 'personal' | 'agency'
+          agency_id: string | null
           created_at: string
           updated_at: string
           last_login: string | null
@@ -53,6 +56,8 @@ export interface Database {
           email_verification_token?: string | null
           password_reset_token?: string | null
           password_reset_expires?: string | null
+          account_type?: 'personal' | 'agency'
+          agency_id?: string | null
           created_at?: string
           updated_at?: string
           last_login?: string | null
@@ -75,9 +80,167 @@ export interface Database {
           email_verification_token?: string | null
           password_reset_token?: string | null
           password_reset_expires?: string | null
+          account_type?: 'personal' | 'agency'
+          agency_id?: string | null
           created_at?: string
           updated_at?: string
           last_login?: string | null
+        }
+      }
+      agencies: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          owner_user_id: string
+          name: string
+          slug: string | null
+          branding_config: Json
+          stripe_connect_id: string | null
+          stripe_connect_status: string
+          settings: Json
+          total_clients: number
+          total_projects: number
+          monthly_revenue: number
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          owner_user_id: string
+          name: string
+          slug?: string | null
+          branding_config?: Json
+          stripe_connect_id?: string | null
+          stripe_connect_status?: string
+          settings?: Json
+          total_clients?: number
+          total_projects?: number
+          monthly_revenue?: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          owner_user_id?: string
+          name?: string
+          slug?: string | null
+          branding_config?: Json
+          stripe_connect_id?: string | null
+          stripe_connect_status?: string
+          settings?: Json
+          total_clients?: number
+          total_projects?: number
+          monthly_revenue?: number
+        }
+      }
+      clients: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          agency_id: string
+          name: string
+          contact_email: string | null
+          contact_phone: string | null
+          client_user_id: string | null
+          company_name: string | null
+          industry: string | null
+          website_url: string | null
+          notes: string | null
+          status: 'active' | 'inactive' | 'archived'
+          total_projects: number
+          total_spent: number
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          agency_id: string
+          name: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          client_user_id?: string | null
+          company_name?: string | null
+          industry?: string | null
+          website_url?: string | null
+          notes?: string | null
+          status?: 'active' | 'inactive' | 'archived'
+          total_projects?: number
+          total_spent?: number
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          agency_id?: string
+          name?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          client_user_id?: string | null
+          company_name?: string | null
+          industry?: string | null
+          website_url?: string | null
+          notes?: string | null
+          status?: 'active' | 'inactive' | 'archived'
+          total_projects?: number
+          total_spent?: number
+        }
+      }
+      agency_projects: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          agency_id: string
+          client_id: string
+          website_id: string | null
+          project_name: string
+          project_description: string | null
+          status: 'draft' | 'generating' | 'live' | 'archived' | 'paused'
+          is_billed: boolean
+          billed_amount: number | null
+          billed_at: string | null
+          client_can_edit: boolean
+          client_last_viewed_at: string | null
+          initial_prompt: string | null
+          custom_fields: Json
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          agency_id: string
+          client_id: string
+          website_id?: string | null
+          project_name: string
+          project_description?: string | null
+          status?: 'draft' | 'generating' | 'live' | 'archived' | 'paused'
+          is_billed?: boolean
+          billed_amount?: number | null
+          billed_at?: string | null
+          client_can_edit?: boolean
+          client_last_viewed_at?: string | null
+          initial_prompt?: string | null
+          custom_fields?: Json
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          agency_id?: string
+          client_id?: string
+          website_id?: string | null
+          project_name?: string
+          project_description?: string | null
+          status?: 'draft' | 'generating' | 'live' | 'archived' | 'paused'
+          is_billed?: boolean
+          billed_amount?: number | null
+          billed_at?: string | null
+          client_can_edit?: boolean
+          client_last_viewed_at?: string | null
+          initial_prompt?: string | null
+          custom_fields?: Json
         }
       }
       websites: {
@@ -440,6 +603,34 @@ export interface Database {
       increment_website_views: {
         Args: { website_uuid: string }
         Returns: void
+      }
+      get_my_agency_id: {
+        Args: {}
+        Returns: string | null
+      }
+      is_agency_admin: {
+        Args: {}
+        Returns: boolean
+      }
+      owns_agency: {
+        Args: { agency_uuid: string }
+        Returns: boolean
+      }
+      get_client_projects: {
+        Args: { client_uuid: string }
+        Returns: Array<{
+          project_id: string
+          project_name: string
+          status: string
+          website_id: string
+          website_subdomain: string
+          created_at: string
+          updated_at: string
+        }>
+      }
+      get_agency_stats: {
+        Args: { agency_uuid: string }
+        Returns: Json
       }
     }
   }

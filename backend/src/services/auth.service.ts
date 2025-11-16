@@ -8,6 +8,8 @@ export async function register(data: {
   password: string;
   firstName: string;
   lastName: string;
+  accountType?: 'personal' | 'agency';
+  agencyName?: string;
 }) {
   // Check if user exists
   const { data: existingUser } = await supabase
@@ -20,41 +22,74 @@ export async function register(data: {
     throw new Error('Email already registered');
   }
 
+  // Validate agency signup
+  if (data.accountType === 'agency' && !data.agencyName) {
+    throw new Error('Agency name is required for agency accounts');
+  }
+
   // Hash password
   const passwordHash = await hashPassword(data.password);
 
   // Generate verification token
   const verificationToken = generateVerificationToken();
 
+  // Prepare user data
+  const userData: any = {
+    email: data.email,
+    password_hash: passwordHash,
+    first_name: data.firstName,
+    last_name: data.lastName,
+    email_verified: false,
+    email_verification_token: verificationToken,
+    account_type: data.accountType || 'personal'
+  };
+
   // Create user
+  // The database trigger will automatically create the agency if account_type='agency'
   const { data: user, error } = await supabase
     .from('users')
-    .insert({
-      email: data.email,
-      password_hash: passwordHash,
-      first_name: data.firstName,
-      last_name: data.lastName,
-      email_verified: false,
-      email_verification_token: verificationToken
-    } as any)
+    .insert(userData)
     .select()
     .single();
 
   if (error) throw error;
   if (!user) throw new Error('Failed to create user');
 
+  // If agency account, update the agency name if provided
+  if (data.accountType === 'agency' && data.agencyName) {
+    const typedUser = user as any as User;
+
+    // Wait a moment for the trigger to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Update the agency name (the trigger creates it with a default name)
+    if (typedUser.agency_id) {
+      await supabase
+        .from('agencies')
+        .update({ name: data.agencyName })
+        .eq('id', typedUser.agency_id);
+    }
+  }
+
   // Send verification email
   await sendVerificationEmail(data.email, verificationToken);
 
   const typedUser = user as any as User;
+
+  const message = data.accountType === 'agency'
+    ? 'Agency account created successfully! Please check your email to verify your account.'
+    : 'Registration successful. Please check your email to verify your account.';
+
   return {
     user: {
       id: typedUser.id,
       email: typedUser.email,
       firstName: typedUser.first_name,
-      lastName: typedUser.last_name
+      lastName: typedUser.last_name,
+      accountType: typedUser.account_type,
+      agencyId: typedUser.agency_id
     },
-    message: 'Registration successful. Please check your email to verify your account.'
+    message
   };
 }
 
@@ -105,7 +140,9 @@ export async function login(email: string, password: string) {
       email: typedUser.email,
       firstName: typedUser.first_name,
       lastName: typedUser.last_name,
-      subscriptionTier: typedUser.subscription_tier
+      subscriptionTier: typedUser.subscription_tier,
+      accountType: typedUser.account_type || 'personal',
+      agencyId: typedUser.agency_id || null
     },
     token: accessToken,
     refreshToken,

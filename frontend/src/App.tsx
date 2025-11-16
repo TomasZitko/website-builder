@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { BuilderNew } from './pages/BuilderNew';
 import { Analytics } from './pages/Analytics';
+import DeveloperAnalytics from './pages/DeveloperAnalytics';
 import { PaymentSuccess } from './pages/PaymentSuccess';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -94,6 +95,14 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <Portfolio />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/developer-analytics"
+          element={
+            <ProtectedRoute>
+              <DeveloperAnalytics />
             </ProtectedRoute>
           }
         />

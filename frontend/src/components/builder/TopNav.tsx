@@ -1,4 +1,4 @@
-import { Home, Plus, Settings, LogOut, Users, Briefcase } from 'lucide-react';
+import { Home, Plus, Settings, LogOut, Users, Briefcase, BarChart3 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 
@@ -84,6 +84,20 @@ export function TopNav() {
                   <span className="flex items-center gap-2">
                     <Briefcase className="w-4 h-4" />
                     Portfolio
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => navigate('/developer-analytics')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    isActive('/developer-analytics')
+                      ? 'bg-foreground/10 text-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4" />
+                    Analytics
                   </span>
                 </button>
               </>

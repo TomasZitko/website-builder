@@ -454,6 +454,110 @@ router.get('/stats', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * GET /api/v1/b2b2c/analytics
+ * Get comprehensive developer analytics
+ */
+router.get('/analytics', authenticateToken, async (req, res) => {
+  try {
+    const developerId = (req as any).user.id;
+    const { timeRange = '30d' } = req.query;
+
+    // Calculate date range
+    const now = new Date();
+    let startDate = new Date();
+
+    switch (timeRange) {
+      case '7d':
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case '30d':
+        startDate.setDate(now.getDate() - 30);
+        break;
+      case '90d':
+        startDate.setDate(now.getDate() - 90);
+        break;
+      case '1y':
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate.setDate(now.getDate() - 30);
+    }
+
+    // Get developer stats
+    const stats = await clientService.getDeveloperStats(developerId);
+
+    // Get clients
+    const { data: clients } = await require('../db/supabase').supabase
+      .from('clients')
+      .select('*')
+      .eq('developer_id', developerId)
+      .gte('created_at', startDate.toISOString());
+
+    // Get all clients for status breakdown
+    const { data: allClients } = await require('../db/supabase').supabase
+      .from('clients')
+      .select('status')
+      .eq('developer_id', developerId);
+
+    // Get websites
+    const { data: websites } = await require('../db/supabase').supabase
+      .from('client_websites')
+      .select('*')
+      .eq('developer_id', developerId)
+      .gte('created_at', startDate.toISOString());
+
+    // Build analytics response
+    const analytics = {
+      revenue: {
+        total: stats.total_revenue || 0,
+        thisMonth: stats.total_revenue || 0, // TODO: Calculate actual monthly
+        lastMonth: 0, // TODO: Calculate from historical data
+        monthlyTrend: [], // TODO: Generate from historical data
+        growthRate: 0
+      },
+      clients: {
+        total: stats.total_clients,
+        active: stats.active_clients,
+        inactive: allClients?.filter((c: any) => c.status === 'inactive').length || 0,
+        pending: allClients?.filter((c: any) => c.status === 'pending').length || 0,
+        thisMonth: clients?.length || 0,
+        lastMonth: 0,
+        growthRate: 0
+      },
+      websites: {
+        total: stats.total_websites,
+        thisMonth: stats.websites_this_month,
+        lastMonth: 0,
+        byStatus: [
+          { status: 'Live', count: 0 },
+          { status: 'In Progress', count: 0 },
+          { status: 'Draft', count: 0 }
+        ],
+        byType: []
+      },
+      performance: {
+        avgProjectValue: 0,
+        avgCompletionTime: 0,
+        clientRetentionRate: 0,
+        monthlyRecurringRevenue: 0
+      },
+      recentActivity: []
+    };
+
+    res.json({
+      success: true,
+      data: { analytics }
+    });
+  } catch (error: any) {
+    console.error('Analytics error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // ============================================
 // ACCOUNT TYPE ROUTES
 // ============================================
